@@ -17,13 +17,11 @@
             <groupId>chiroito.sample.ee</groupId>
             <artifactId>weblogic-web</artifactId>
             <type>war</type>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>chiroito.sample.ee</groupId>
             <artifactId>weblogic-ejb</artifactId>
             <type>ejb</type>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -33,24 +31,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-ear-plugin</artifactId>
-                <version>${version.ear.plugin}</version>
-                <configuration>
-                    <version>6</version>
-                    <defaultLibBundleDir>lib</defaultLibBundleDir>
-                    <modules>
-                        <webModule>
-                            <groupId>chiroito.sample.ee</groupId>
-                            <artifactId>weblogic-web</artifactId>
-                            <contextRoot>/web</contextRoot>
-                        </webModule>
-                    </modules>
-                    <fileNameMapping>no-version</fileNameMapping>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.oracle.weblogic</groupId>
                 <artifactId>weblogic-maven-plugin</artifactId>
-                <version>${version.wls.maven.plugin}</version>
             </plugin>
         </plugins>
     </build>
