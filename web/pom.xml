@@ -21,12 +21,10 @@
             <artifactId>weblogic-ejb</artifactId>
             <type>ejb</type>
             <scope>provided</scope>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.weblogic</groupId>
             <artifactId>weblogic-server-pom</artifactId>
-            <version>${version.wls.server.pom}</version>
             <type>pom</type>
             <scope>provided</scope>
         </dependency>
@@ -37,10 +35,6 @@
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>${version.war.plugin}</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -27,21 +27,22 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Java EE Application -->
             <dependency>
                 <groupId>chiroito.sample.ee</groupId>
-                <artifactId>wls-ejb-in-ear-ejb</artifactId>
+                <artifactId>weblogic-ejb</artifactId>
                 <version>${project.version}</version>
                 <type>ejb</type>
             </dependency>
-
             <dependency>
                 <groupId>chiroito.sample.ee</groupId>
-                <artifactId>wls-ejb-in-ear-web</artifactId>
+                <artifactId>weblogic-web</artifactId>
                 <version>${project.version}</version>
                 <type>war</type>
                 <scope>compile</scope>
             </dependency>
 
+            <!-- WebLogic plug-in -->
             <dependency>
                 <groupId>com.oracle.weblogic</groupId>
                 <artifactId>weblogic-server-pom</artifactId>
@@ -53,11 +54,53 @@
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
         <plugins>
+                <!-- WebLogic plug-in -->
             <plugin>
                 <groupId>com.oracle.weblogic</groupId>
                 <artifactId>weblogic-maven-plugin</artifactId>
                 <version>${version.wls.maven.plugin}</version>
+            </plugin>
+
+                <!-- Java EE archive plug-in -->
+                <plugin>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${version.war.plugin}</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>${version.ejb.plugin}</version>
+                    <configuration>
+                        <ejbVersion>3.1</ejbVersion>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>${version.ear.plugin}</version>
+                    <configuration>
+                        <version>6</version>
+                        <defaultLibBundleDir>lib</defaultLibBundleDir>
+                        <modules>
+                            <webModule>
+                                <groupId>chiroito.sample.ee</groupId>
+                                <artifactId>weblogic-web</artifactId>
+                                <contextRoot>/web</contextRoot>
+                            </webModule>
+                        </modules>
+                        <fileNameMapping>no-version</fileNameMapping>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.oracle.weblogic</groupId>
+                <artifactId>weblogic-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
