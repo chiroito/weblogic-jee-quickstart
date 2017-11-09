@@ -40,5 +40,5 @@ mvn package
 ```
 ### 6. Deploy the application to WebLogic Server
 ```
-mvn weblogic:deploy -pl ear
+mvn deploy -Dadminurl=t3://127.0.0.1:7001 -Duser=weblogic -Dpassword=69122d37 -Dtargets=AdminServer -Dupload=true -Dremote=true
 ```
