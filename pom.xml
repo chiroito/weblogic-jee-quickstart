@@ -10,16 +10,23 @@
     <url>https://github.com/chiroito/weblogic-jee-quickstart</url>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <version.wls.server.pom>12.2.1-0-0</version.wls.server.pom>
-        <version.wls.maven.plugin>12.2.1-0-0</version.wls.maven.plugin>
+        <!-- Application -->
+        <contextRoot>/web</contextRoot>
+        <jee>6</jee>
+        <ejb>3.1</ejb>
+        <defaultLibBundleDir>lib</defaultLibBundleDir>
+        <!-- Archive Plugin -->
         <version.ear.plugin>2.8</version.ear.plugin>
         <version.ejb.plugin>2.3</version.ejb.plugin>
         <version.war.plugin>3.0.0</version.war.plugin>
+        <!-- Compiler -->
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <weblogic.user>weblogic</weblogic.user>
-        <weblogic.password>welcome1</weblogic.password>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- WebLogic -->
+        <version.wls.server.pom>12.2.1-0-0</version.wls.server.pom>
+        <version.wls.maven.plugin>12.2.1-0-0</version.wls.maven.plugin>
     </properties>
 
     <modules>
@@ -64,6 +71,15 @@
                     <groupId>com.oracle.weblogic</groupId>
                     <artifactId>weblogic-maven-plugin</artifactId>
                     <version>${version.wls.maven.plugin}</version>
+                    <executions>
+                        <execution>
+                            <id>wls-deploy</id>
+                            <configuration>
+                                <name>${project.build.finalName}</name>
+                                <source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
 
                 <!-- Java EE archive plug-in -->
@@ -78,7 +94,7 @@
                     <artifactId>maven-ejb-plugin</artifactId>
                     <version>${version.ejb.plugin}</version>
                     <configuration>
-                        <ejbVersion>3.1</ejbVersion>
+                        <ejbVersion>${ejb}</ejbVersion>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -86,13 +102,13 @@
                     <artifactId>maven-ear-plugin</artifactId>
                     <version>${version.ear.plugin}</version>
                     <configuration>
-                        <version>6</version>
-                        <defaultLibBundleDir>lib</defaultLibBundleDir>
+                        <version>${jee}</version>
+                        <defaultLibBundleDir>${defaultLibBundleDir}</defaultLibBundleDir>
                         <modules>
                             <webModule>
                                 <groupId>chiroito.sample.ee</groupId>
                                 <artifactId>weblogic-web</artifactId>
-                                <contextRoot>/web</contextRoot>
+                                <contextRoot>${contextRoot}</contextRoot>
                             </webModule>
                         </modules>
                         <fileNameMapping>no-version</fileNameMapping>
