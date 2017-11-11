@@ -10,6 +10,7 @@ public class ServletSample extends HttpServlet{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+        System.out.println("************************Servlet********************************");
         res.getWriter().println("Hello World!");
     }
 }

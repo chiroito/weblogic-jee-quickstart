@@ -16,19 +16,50 @@
     <name>WebLogic JEE QuickStart - ejb</name>
 
     <dependencies>
+        <!-- Testing framework -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.container</groupId>
+            <artifactId>arquillian-wls-remote-rest</artifactId>
+        </dependency>
+
+        <!-- WebLogic -->
         <dependency>
             <groupId>com.oracle.weblogic</groupId>
             <artifactId>weblogic-server-pom</artifactId>
-            <version>${version.wls.server.pom}</version>
             <type>pom</type>
         </dependency>
+
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Building application -->
             <plugin>
                 <artifactId>maven-ejb-plugin</artifactId>
             </plugin>
+
+            <!-- Action to WebLogic Server -->
+            <plugin>
+                <groupId>com.oracle.weblogic</groupId>
+                <artifactId>weblogic-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>wls-deploy-before-it</id>
+                    </execution>
+                    <execution>
+                        <id>wls-undeploy-after-it</id>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>

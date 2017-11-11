@@ -7,6 +7,7 @@ weblogic-jee-quickstart is sample of Java EE for EAR artifact to Oracle WebLogic
 1. Import weblogic-jee-quickstart/pom.xml to IDE
 1. Pack the application by maven
 1. Deploy the application to WebLogic Server
+1. Undeploy the application
 
 ### 1. Install Oracle WebLogic Server
 
@@ -32,13 +33,18 @@ git clone https://github.com/chiroito/weblogic-jee-quickstart
 ### 4. Import weblogic-jee-quickstart/pom.xml to IDE
 Depends on IDE to use. If you use IntelliJ IDEA, you can import [File]-[New]-[Project from Existing Sources...].
 
-### 5. Pack the application by maven
+### 5. Build the application by maven
 After developing application, you can build application to EAR artifact using maven.
 ```
 cd weblogic-jee-quickstart
 mvn package
 ```
-### 6. Deploy the application to WebLogic Server
+### 6. Test & Deploy the application to WebLogic Server
 ```
-mvn deploy -Dadminurl=t3://127.0.0.1:7001 -Duser=weblogic -Dpassword=69122d37 -Dtargets=AdminServer -Dupload=true -Dremote=true
+mvn deploy -DtestServer=127.0.0.1:7001 -DprodServer=127.0.0.1:7001 -Duser=weblogic -Dpassword=2bd2d1a6 -Dtargets=AdminServer
+```
+
+###7. Undeploy
+```
+mvn weblogic:undeploy -pl ear -DprodServer=127.0.0.1:7001 -Duser=weblogic -Dpassword=2bd2d1a6 -Dtargets=AdminServer
 ```
