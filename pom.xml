@@ -10,18 +10,14 @@
     <url>https://github.com/chiroito/weblogic-jee-quickstart</url>
 
     <properties>
-        <!-- Application -->
-        <contextRoot>/web</contextRoot>
-        <jee>6</jee>
-        <ejb>3.1</ejb>
-        <defaultLibBundleDir>lib</defaultLibBundleDir>
-        <!-- Archive Plugin -->
-        <version.ear.plugin>2.8</version.ear.plugin>
-        <version.ejb.plugin>2.3</version.ejb.plugin>
-        <version.war.plugin>3.0.0</version.war.plugin>
-        <!-- Compiler -->
+        <!-- Java -->
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
+        <version.jee>7</version.jee>
+        <version.ejb>3.1</version.ejb>
+        <!-- Application -->
+        <contextRoot>/web</contextRoot>
+        <defaultLibBundleDir>lib</defaultLibBundleDir>
         <maven.deploy.skip>true</maven.deploy.skip>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- WebLogic -->
@@ -37,7 +33,7 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Java EE Application -->
+            <!-- Application -->
             <dependency>
                 <groupId>chiroito.sample.ee</groupId>
                 <artifactId>weblogic-ejb</artifactId>
@@ -52,7 +48,33 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- WebLogic plug-in -->
+            <!-- Testing framework -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.junit</groupId>
+                <artifactId>arquillian-junit-container</artifactId>
+                <version>1.0.1.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.container</groupId>
+                <artifactId>arquillian-wls-remote-rest</artifactId>
+                <version>1.0.1.Final</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-rest-client-impl-jersey</artifactId>
+                <version>1.0.0.Alpha4</version>
+                <scope>test</scope>
+            </dependency>
+
+            <!-- WebLogic Development Maven Plug-In -->
             <dependency>
                 <groupId>com.oracle.weblogic</groupId>
                 <artifactId>weblogic-server-pom</artifactId>
@@ -60,53 +82,78 @@
                 <type>pom</type>
                 <scope>provided</scope>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <pluginManagement>
             <plugins>
-                <!-- WebLogic plug-in -->
+                <!-- WebLogic Maven plug-in -->
                 <plugin>
                     <groupId>com.oracle.weblogic</groupId>
                     <artifactId>weblogic-maven-plugin</artifactId>
                     <version>${version.wls.maven.plugin}</version>
+                    <configuration>
+                        <name>${project.build.finalName}</name>
+                        <source>${project.build.directory}/${project.build.finalName}.${project.packaging}
+                        </source>
+                        <upload>true</upload>
+                        <remote>true</remote>
+                    </configuration>
                     <executions>
+                        <!-- Deploying the module to test Server before integration test phase -->
                         <execution>
-                            <id>wls-deploy</id>
+                            <id>wls-deploy-before-it</id>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>deploy</goal>
+                            </goals>
                             <configuration>
-                                <name>${project.build.finalName}</name>
-                                <source>${project.build.directory}/${project.build.finalName}.${project.packaging}</source>
+                                <adminurl>t3://${testServer}</adminurl>
                             </configuration>
                         </execution>
+
+                        <!-- Undeploying the module to test Server after integration test phase -->
+                        <execution>
+                            <id>wls-undeploy-after-it</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>undeploy</goal>
+                            </goals>
+                            <configuration>
+                                <adminurl>t3://${testServer}</adminurl>
+                            </configuration>
+                        </execution>
+
                     </executions>
                 </plugin>
 
                 <!-- Java EE archive plug-in -->
                 <plugin>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>${version.war.plugin}</version>
+                    <version>3.2.0</version>
                     <configuration>
                         <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-ejb-plugin</artifactId>
-                    <version>${version.ejb.plugin}</version>
+                    <version>3.0.0</version>
                     <configuration>
-                        <ejbVersion>${ejb}</ejbVersion>
+                        <ejbVersion>${version.ejb}</ejbVersion>
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-ear-plugin</artifactId>
-                    <version>${version.ear.plugin}</version>
+                    <version>2.10.1</version>
                     <configuration>
-                        <version>${jee}</version>
+                        <version>${version.jee}</version>
                         <defaultLibBundleDir>${defaultLibBundleDir}</defaultLibBundleDir>
                         <modules>
                             <webModule>
-                                <groupId>chiroito.sample.ee</groupId>
+                                <groupId>${project.groupId}</groupId>
                                 <artifactId>weblogic-web</artifactId>
                                 <contextRoot>${contextRoot}</contextRoot>
                             </webModule>
@@ -114,6 +161,29 @@
                         <fileNameMapping>no-version</fileNameMapping>
                     </configuration>
                 </plugin>
+
+                <!-- Test -->
+                <!-- Skip tests in test phase and tests in integration test phase -->
+                <plugin>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.20.1</version>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>integration-test</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <configuration>
+                                <skip>false</skip>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
             </plugins>
         </pluginManagement>
     </build>

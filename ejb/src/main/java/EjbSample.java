@@ -1,8 +1,9 @@
 import javax.ejb.Stateless;
 
-/**
- * Created by chito on 2017/02/07.
- */
 @Stateless
 public class EjbSample {
+
+    public int add(int x, int y) {
+        return x + y;
+    }
 }

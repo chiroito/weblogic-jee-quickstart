@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<arquillian xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://jboss.org/schema/arquillian"
+            xsi:schemaLocation="http://jboss.org/schema/arquillian
+    http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <container qualifier="arquillian-weblogic-remote" default="true">
+        <configuration>
+            <property name="adminUrl">http://${testServer}/</property>
+            <property name="adminUserName">${user}</property>
+            <property name="adminPassword">${password}</property>
+            <property name="target">${targets}</property>
+            <!--<property name="logRESTMessages">true</property>-->
+            <!--<property name="logRESTEntities">true</property>-->
+        </configuration>
+    </container>
+</arquillian>
